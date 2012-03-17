@@ -7,7 +7,7 @@ Installation
 To install the plugin under Linux:
 
     cd ~/.config/sublime-text-2/Packages
-    git clone https://github.com/Alom/sublime-text-package
+    git clone https://github.com/alexandresalome/sublime-text-package Alom
 
 This package provides:
 
