@@ -6,13 +6,13 @@ Config summary (see README.md for details):
 
     # key binding
     { "keys": ["ctrl+alt+n"], "command": "php_namespace" }
-
+²
 @author: Alexandre Salomé <alexandre.salome@gmail.com>
 @license: MIT (http://www.opensource.org/licenses/mit-license.php)
 @since: 2012-03-15
 '''
 
-import sublime, sublime_plugin
+import re, sublime, sublime_plugin
 
 class PhpNamespaceCommand(sublime_plugin.TextCommand):
 	def run(self, edit):
@@ -29,7 +29,9 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
 			sublime.error_message("No .php extension")
 			return
 
-		namespace = filename[pos+5:-4].replace("/", "\\")
+
+		className = filename[pos+5:-4].replace("/", "\\")
+		namespace = re.sub(r'\\\w+$', '', className)
 
 		sels = self.view.sel()
 		for sel in sels:
