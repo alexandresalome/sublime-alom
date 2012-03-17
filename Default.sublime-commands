@@ -1,0 +1,6 @@
+[
+	{
+		"caption": "Insert PHP namespace",
+		"command": "php_namespace"
+	}
+]
