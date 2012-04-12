@@ -22,8 +22,10 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
 
 		pos = filename.find("/src/")
 		if (pos == -1):
-			sublime.error_message("No src/ folder in current filepath\n" + filename)
-			return
+			pos = filename.find("\src\\")
+			if (pos == -1):
+				sublime.error_message("No src/ folder in current filepath\n" + filename)
+				return
 
 		if (not filename.endswith(".php")):
 			sublime.error_message("No .php extension")
