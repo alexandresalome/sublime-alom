@@ -12,30 +12,32 @@ Config summary (see README.md for details):
 @since: 2012-03-15
 '''
 
-import re, sublime, sublime_plugin
+import re, sublime, sublime_plugin, os
 
 class PhpNamespaceCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
+    def run(self, edit):
 
-		# Filename to namespace
-		filename = self.view.file_name()
+        # Filename to namespace
+        filename = self.view.file_name()
 
-		pos = filename.find("/src/")
-		if (pos == -1):
-			pos = filename.find("\src\\")
-			if (pos == -1):
-				sublime.error_message("No src/ folder in current filepath\n" + filename)
-				return
+        if (not filename.endswith(".php")):
+            sublime.error_message("No .php extension")
+            return
 
-		if (not filename.endswith(".php")):
-			sublime.error_message("No .php extension")
-			return
+        for breakword in [ "src", "tests"]:
+            segment = os.sep + breakword + os.sep
+            pos = filename.find(segment)
+            if (pos != -1):
+                break
 
+        if (pos == -1):
+            sublime.error_message("No folder " + breakwords.join(" or ") + "in file:\n" + filename)
+            return
 
-		className = filename[pos+5:-4].replace("/", "\\")
-		namespace = re.sub(r'\\\w+$', '', className)
+        className = filename[pos+len(segment):-4].replace("/", "\\")
+        namespace = re.sub(r'\\\w+$', '', className)
 
-		sels = self.view.sel()
-		for sel in sels:
-			self.view.erase(edit, sel)
-			self.view.insert(edit, sel.begin(), "namespace " + namespace + ";\n")
+        sels = self.view.sel()
+        for sel in sels:
+            self.view.erase(edit, sel)
+            self.view.insert(edit, sel.begin(), "namespace " + namespace + ";\n")
