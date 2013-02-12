@@ -19,12 +19,13 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
 
         # Filename to namespace
         filename = self.view.file_name()
+        breakwords = [ "src", "tests"]
 
         if (not filename.endswith(".php")):
             sublime.error_message("No .php extension")
             return
 
-        for breakword in [ "src", "tests"]:
+        for breakword in breakwords:
             segment = os.sep + breakword + os.sep
             pos = filename.find(segment)
             if (pos != -1):
