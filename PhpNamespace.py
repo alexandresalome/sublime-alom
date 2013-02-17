@@ -32,11 +32,23 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
                 break
 
         if (pos == -1):
-            sublime.error_message("No folder " + breakwords.join(" or ") + "in file:\n" + filename)
-            return
+            namespace = None
+            folders = filename.split(os.sep)
+            folders.reverse()
 
-        className = filename[pos+len(segment):-4].replace("/", "\\")
-        namespace = re.sub(r'\\\w+$', '', className)
+            for folder in folders[1:-1]:
+                if (folder[0].upper() == folder[0]):
+                    if None == namespace:
+                        namespace = folder
+                    else:
+                        namespace = folder + "\\" + namespace
+
+            if None == namespace:
+                sublime.error_message("No folder " + breakwords.join(" or ") + "in file:\n" + filename)
+                return
+        else:
+            className = filename[pos+len(segment):-4].replace("/", "\\")
+            namespace = re.sub(r'\\\w+$', '', className)
 
         sels = self.view.sel()
         for sel in sels:
