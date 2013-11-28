@@ -25,6 +25,7 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
             return
 
         breakwords = [ "src", "lib", "tests"]
+        breakwords.extend(sublime.load_settings("Preferences.sublime-settings").get('PhpNamespace_breakwords', []));
         for breakword in breakwords:
             segment = os.sep + breakword + os.sep
             pos = filename.find(segment)
