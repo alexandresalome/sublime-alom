@@ -60,21 +60,10 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
                     json_data.close()
                     try:
                         # Iterate through all PSR-4 definitions
+                        for (nsPrefix, nsPath) in data["autoload-dev"]["psr-4"].items():
+                            namespace = self.readNamespace(namespace, className, filename, pos, nsPrefix, nsPath)
                         for (nsPrefix, nsPath) in data["autoload"]["psr-4"].items():
-                            # Every namespace prefix should end with \\, but let's be tolerate
-                            if not nsPrefix.endswith("\\"):
-                                nsPrefix += "\\"
-                            # If the filename after the breakword starts with the path for the namespace,
-                            # we want to add the namespace prefix to the namespace
-                            if filename[pos:].startswith("/" + nsPath):
-                                # If we are in the "root" (or breakword) directory, the className consists only of the
-                                # className, without a namespace and we want to replace the class name with the
-                                # namespace prefix.
-                                # Else we have a namespace and we add the prefix at the beginning
-                                if className.find("\\") == -1:
-                                    namespace = nsPrefix[:-1]
-                                else:
-                                    namespace = nsPrefix + namespace
+                            namespace = self.readNamespace(namespace, className, filename, pos, nsPrefix, nsPath)
                     except KeyError:
                         # If there is no autoload or PSR-4 definition in composer.json
                         pass
@@ -86,3 +75,21 @@ class PhpNamespaceCommand(sublime_plugin.TextCommand):
         for sel in sels:
             self.view.erase(edit, sel)
             self.view.insert(edit, sel.begin(), "namespace " + namespace + ";\n")
+
+    def readNamespace(self, namespace, className, filename, pos, nsPrefix, nsPath):
+        # Every namespace prefix should end with \\, but let's be tolerate
+        if not nsPrefix.endswith("\\"):
+            nsPrefix += "\\"
+        # If the filename after the breakword starts with the path for the namespace,
+        # we want to add the namespace prefix to the namespace
+        if filename[pos:].startswith("/" + nsPath):
+            # If we are in the "root" (or breakword) directory, the className consists only of the
+            # className, without a namespace and we want to replace the class name with the
+            # namespace prefix.
+            # Else we have a namespace and we add the prefix at the beginning
+            if className.find("\\") == -1:
+                return nsPrefix[:-1]
+            else:
+                return nsPrefix + namespace
+
+        return namespace
