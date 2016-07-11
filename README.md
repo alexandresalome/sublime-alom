@@ -1,6 +1,8 @@
 SublimeText Package by Alexandre Salomé
 =======================================
 
+**DEPRECATED**: It is recommended to use SublimePHPCompanion, a complete plugin for PHP development.
+
 This packages provides a shortcut to insert the `namespace` definition in a PHP file. It has support for PSR-0 style namespaces and support for PSR-4 if [Composer](https://getcomposer.org/doc/04-schema.md#psr-4) is used.
 
 Installation
